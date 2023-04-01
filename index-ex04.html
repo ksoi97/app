@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>상품 페이지</title>
+    <style>
+        body {
+            text-align: center;
+        }
+
+        #wrap {
+            width: 860px;
+            margin: 0 auto;
+        }
+
+        form {
+            margin-bottom: 20px;
+        }
+
+        .main-card button {
+            position: relative;
+            left: -45px;
+            bottom: 15px;
+        }
+
+        .favorites {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 15px;
+        }
+
+        .favorites img {
+            width: 150px;
+        }
+    </style>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/babel-standalone@6/babel.min.js"></script>
+</head>
+
+<body>
+    <div id="wrap">
+        <div id="food-li-insert"></div>
+
+        <!-- 기존 태그 모두 삭제함!! -->
+
+        <script type="text/babel">
+            // [h1] ==================================================
+            // 2. [h1] react element -> conponet 변경
+            function Title(props) {
+                return <h1>{props.children}</h1>;
+            }
+
+            // [form] =================================================
+            // 2. [form] react element -> conponet 변경
+            const Form = ({ handleFormSubmit }) => {
+                // [상태 추가] -----------------------------------
+                // const counterState = React.useState(1);
+
+                // // counterState의 첫번째 요소 저장 : 초기값
+                // const counter = counterState[0];
+
+                // // counterState의 두번째 요소 저장 : 함수
+                // const setCounter = counterState[1];
+
+                // 위 코드(세 라인 -> 한 라인) 정리 : js 문법 ----
+                // const [counter, setCounter] = React.useState(1);
+
+                // console.log("[핸들러 밖] counterState >> ", counterState);
+                // console.log("[핸들러 밖] counter >> ", counter);
+
+                // function handleFormSubmit(event) {
+                //     // form refresh 방지
+                //     event.preventDefault();
+                //     console.log("추가 버튼 클릭함!!!");
+
+                //     // console.log("[핸들러 내] counterState >> ", counterState);
+
+                //     setCounter(counter + 1);
+
+                //     //console.log("[핸들러 내] counter >> ", counter);
+                // }
+
+                return (
+                    <form onSubmit={handleFormSubmit}>
+                        <input type="text" name="name" placeholder="상품명을 입력하세요" />
+                        <button type="submit">추가</button>
+                    </form>
+                );
+            }
+
+            // [div] : mainCard =================================================
+            // 2. react element -> conponet 변경
+            const MainCard = ({ img, handleHeartClick }) => {
+                // function handleHeartClick() {
+                //     console.log("하트 클릭함!");
+                // }
+                // function handleHeartMouseOver() {
+                //     console.log("하트 스쳐지나감")
+                // }
+                return (
+                    <div className="main-card">
+                        <img
+                            src={img}
+                            alt="올리브오일"
+                            width="400" />
+                        <button onClick={handleHeartClick}>🤍</button>
+                    </div>
+                );
+            }
+
+            // [ul] : favorites =================================================
+            // 2. react element -> conponet 변경
+            function Favorites({ favorites }) {
+                // const foodOne = "img/food-one.jpg";
+                // const foodTwo = "img/food-two.jpg";
+                // const foodThree = "img/food-three.jpg";
+                // const foods = [foodOne, foodTwo];
+
+                return (
+                    <ul className="favorites">
+                        {/* <FoodItem img="img/food-one.jpg" title="이미지1" />
+                        <FoodItem img="img/food-two.jpg" title="이미지2" /> */}
+                        {favorites.map(food => (<FoodItem img={food} />))}
+                    </ul>
+                );
+            }
+
+            // [foodItem] ======================================================
+            // foodItem react element -> componet 변경 
+            function FoodItem(props) {
+                return (
+                    <li>
+                        <img src={props.img} alt={props.title}
+                            style={{ width: "150px", height: "100px", backgroundSize: "contain" }} />
+                    </li>
+                );
+            }
+
+            // [리액트를 이용하여 추가] =====================================
+            // 추가할 위치 지정 : .food-li-insert
+            const foodLiInsert = document.querySelector('#food-li-insert');
+
+            // state 추가를 위해 react element -> component 변경
+            // 화살표 함수 사용
+            const App = () => {
+                // [문제] 추가 버튼을 클릭하면, main card 이미지 변경
+                const foodOne = "img/food-one.jpg";
+                const foodTwo = "img/food-two.jpg";
+                const foodThree = "img/food-three.jpg";
+                const [mainFood, setMainFood] = React.useState(foodOne);
+
+                const [favorites, setFavorites] = React.useState([foodOne, foodTwo]);
+
+                const [counter, setCounter] = React.useState(1);
+
+                function handleFormSubmit(event) {
+                    event.preventDefault();
+                    console.log("추가 버튼 클릭함!!!");
+                    setCounter(counter + 1);
+                    setMainFood(foodTwo);
+                }
+
+                function handleHeartClick() {
+                    console.log("하트 클릭함!");
+                    setFavorites([...favorites, foodThree]);
+                }
+
+                return (
+                    <div>
+                        <Title>페이지 {counter}</Title>
+                        <Form handleFormSubmit={handleFormSubmit} />
+                        <MainCard img={mainFood} handleHeartClick={handleHeartClick} />
+                        <Favorites favorites={favorites} />
+                    </div>
+                )
+            }
+
+            /* 18 버전 */
+            ReactDOM.createRoot(foodLiInsert).render(<App />);    //요소 2개 렌더링
+        </script>
+    </div>
+</body>
+
+</html>
